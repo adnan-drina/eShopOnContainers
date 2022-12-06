@@ -6,10 +6,11 @@ jobs:
     vmImage: 'ubuntu-latest'
   steps:
   - task: UseDotNet@2
-    displayName: 'Use .NET Core 3.1 SDK'
+    displayName: 'Use .NET 6.0'
     inputs:
       packageType: sdk
-      version: 3.1.100
+#      version: 3.1.100
+      version: "6.0"
       installationPath: $(Agent.ToolsDirectory)/dotnet
   - task: DotNetCoreCLI@2
     displayName: 'dotnet restore'
