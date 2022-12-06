@@ -1,7 +1,7 @@
 variables:
   OpenShiftServiceConnection: 'OpenShift on ARO'
-  SqlUsername: myuser
-  SqlPassword: mypass01
+  SqlUsername: sa
+  SqlPassword: Pass@word
 trigger:
   branches:
     include:
