@@ -1,26 +1,4 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using HealthChecks.UI.Client;
-using IdentityServer4.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.eShopOnContainers.Services.Identity.API.Certificates;
-using Microsoft.eShopOnContainers.Services.Identity.API.Data;
-using Microsoft.eShopOnContainers.Services.Identity.API.Devspaces;
-using Microsoft.eShopOnContainers.Services.Identity.API.Models;
-using Microsoft.eShopOnContainers.Services.Identity.API.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
-using System;
-using System.Reflection;
+﻿using Microsoft.AspNetCore.DataProtection;
 
 namespace Microsoft.eShopOnContainers.Services.Identity.API
 {
@@ -60,7 +38,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API
                 {
                     opts.ApplicationDiscriminator = "eshop.identity";
                 })
-                .PersistKeysToRedis(ConnectionMultiplexer.Connect(Configuration["DPConnectionString"]), "DataProtection-Keys");
+                .PersistKeysToStackExchangeRedis(ConnectionMultiplexer.Connect(Configuration["DPConnectionString"]), "DataProtection-Keys");
             }
 
             services.AddHealthChecks()
@@ -75,26 +53,11 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API
             var connectionString = Configuration["ConnectionString"];
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            // Check to see if the Identity server is using https
-            var isUsingHttps = false;
-            var identityUrlExternal = this.Configuration.GetValue<string>("IdentityUrlExternal");
-            if (!string.IsNullOrEmpty(identityUrlExternal))
-            {
-                var identityUri = new Uri(identityUrlExternal);
-                isUsingHttps = identityUri.Scheme == Uri.UriSchemeHttps;
-            }
-
             // Adds IdentityServer
             services.AddIdentityServer(x =>
             {
                 x.IssuerUri = "null";
                 x.Authentication.CookieLifetime = TimeSpan.FromHours(2);
-
-                // Need this if using https
-                if (isUsingHttps)
-                {
-                    x.PublicOrigin = identityUrlExternal;
-                }
             })
             .AddDevspacesIfNeeded(Configuration.GetValue("EnableDevspaces", false))
             .AddSigningCredential(Certificate.Get())
@@ -127,7 +90,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API
             services.AddRazorPages();
 
             var container = new ContainerBuilder();
-            container.Populate(services);
+            container.Populate(services);   
 
             return new AutofacServiceProvider(container.Build());
         }
@@ -143,23 +106,22 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-            }
+            }            
 
             var pathBase = Configuration["PATH_BASE"];
             if (!string.IsNullOrEmpty(pathBase))
             {
-                loggerFactory.CreateLogger<Startup>().LogDebug("Using PATH BASE '{pathBase}'", pathBase);
+                //loggerFactory.CreateLogger<Startup>().LogDebug("Using PATH BASE '{pathBase}'", pathBase);
                 app.UsePathBase(pathBase);
             }
 
             app.UseStaticFiles();
 
-            // Make work identity server redirections in Edge and lastest versions of browers. WARN: Not valid in a production environment.
+            // Make work identity server redirections in Edge and lastest versions of browsers. WARN: Not valid in a production environment.
             app.Use(async (context, next) =>
             {
                 context.Response.Headers.Add("Content-Security-Policy", "script-src 'unsafe-inline'");
@@ -169,7 +131,13 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API
             app.UseForwardedHeaders();
             // Adds IdentityServer
             app.UseIdentityServer();
+
+            // Fix a problem with chrome. Chrome enabled a new feature "Cookies without SameSite must be secure", 
+            // the cookies should be expired from https, but in eShop, the internal communication in aks and docker compose is http.
+            // To avoid this problem, the policy of cookies should be in Lax mode.
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = AspNetCore.Http.SameSiteMode.Lax });
             app.UseRouting();
+                        
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
