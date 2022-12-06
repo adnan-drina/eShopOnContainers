@@ -21,7 +21,7 @@ services:
     image: ${REGISTRY:-eshop}/identity.api:${PLATFORM:-linux}-${TAG:-latest}
     build:
       context: .
-      dockerfile: Services/Identity/Identity.API/Dockerfile
+      dockerfile: ../../../dump/Identity/Identity.API/Dockerfile
     depends_on:
       - sqldata
 
