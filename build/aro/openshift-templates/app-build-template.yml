@@ -27,7 +27,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
-          name: dotnet:3.1
+          name: dotnet:6.0
           namespace: openshift
       type: Source
     successfulBuildsHistoryLimit: 5
