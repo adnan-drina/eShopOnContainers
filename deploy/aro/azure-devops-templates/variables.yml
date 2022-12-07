@@ -6,7 +6,7 @@ variables:
   PublicHostName: eshop$(EnvironmentName)
   IdentityApiHostName: identityapi.$(OpenShiftProject).svc
   IdentityPublicHostName: identity$(EnvironmentName)
-  IdentityUrlExternal: https://$(IdentityPublicHostName)
+  IdentityUrlExternal: http://$(IdentityPublicHostName)
   IdentityApiUrl: http://$(IdentityApiHostName):8080
   IdentityApiHc: $(IdentityApiUrl)/hc
   BasketApiHostName: basketapi.$(OpenShiftProject).svc
@@ -17,7 +17,7 @@ variables:
   CatalogApiUrl: http://$(CatalogApiHostName):8080
   CatalogApiGrpcUrl: http://$(CatalogApiHostName):8081
   CatalogPublicHostName: catalog$(EnvironmentName)
-  CatalogUrlExternal: https://$(CatalogPublicHostName)
+  CatalogUrlExternal: http://$(CatalogPublicHostName)
   CatalogApiHc: $(CatalogApiUrl)/hc
   PicBaseUrl: $(CatalogUrlExternal)/api/v1/catalog/items/[0]/pic/
   LocationsApiHostName: locationsapi.$(OpenShiftProject).svc
@@ -54,10 +54,10 @@ variables:
   WebhooksWebClientHostName: webhookclient.$(OpenShiftProject).svc
   WebhooksWebClientUrl: http://$(WebhooksWebClientHostName):8080
   WebhooksToken: 6168DB8D-DC58-4094-AF24-483278923590
-  WebSpaUrl: https://eshop-spa$(EnvironmentName)
+  WebSpaUrl: http://eshop-spa$(EnvironmentName)
   WebSpaHostName: webspa.$(OpenShiftProject).svc
   WebSpaHc: http://$(WebSpaHostName):8080/hc
-  WebMvcUrl: https://$(PublicHostName)
+  WebMvcUrl: http://$(PublicHostName)
   WebMvcHc: $(WebMvcUrl)/hc
   WebShoppingApiGatewayHostName: webshoppingapigw.$(OpenShiftProject).svc
   WebShoppingApiGatewayUrl: http://$(WebShoppingApiGatewayHostName):8080
