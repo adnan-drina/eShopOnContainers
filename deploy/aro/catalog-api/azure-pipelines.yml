@@ -38,6 +38,6 @@ stages:
             | oc apply -f-'
           failOnStderr: true
           displayName: 'Ensure Catalog API OpenShift DeploymentConfig and Service'
-         - script: 'oc apply -f ./deploy/aro/catalog-api/catalog-route.yaml'
-           failOnStderr: true
-           displayName: 'Ensure Catalog API Route'
+        - script: 'oc apply -f ./deploy/aro/catalog-api/catalog-route.yaml'
+          failOnStderr: true
+          displayName: 'Ensure Catalog API Route'
