@@ -23,11 +23,11 @@ stages:
         pool: 
           vmImage: 'windows-latest'
         steps:
-        - task: AzureKeyVault@1
-          displayName: 'Azure Key Vault: openshift-demo-vault'
-          inputs:
-            azureSubscription: 'Azure OpenShift Demo'
-            KeyVaultName: 'openshift-demo-vault'
+        # - task: AzureKeyVault@1
+        #   displayName: 'Azure Key Vault: openshift-demo-vault'
+        #   inputs:
+        #     azureSubscription: 'Azure OpenShift Demo'
+        #     KeyVaultName: 'openshift-demo-vault'
         # - task: colinsalmcorner.colinsalmcorner-buildtasks.replace-tokens-task.ReplaceTokens@1
         #   displayName: 'Replace tokens in identity-public-route'
         #   inputs:
