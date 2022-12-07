@@ -14,7 +14,7 @@ stages:
     variables:
       OpenShiftProject: development
       SourceImageRegistryProjectName: development
-      EnvironmentName: -dev.msftnbu.com
+      EnvironmentName: -development.apps.cluster-k4pz2.k4pz2.sandbox1929.opentlc.com
     jobs:
       - job: OrderingApiDeployment
         displayName: 'Ordering API Deployment'

@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: webmvc
+  namespace: development
+spec:
+  hosts:
+    - $GATEWAY_URL
+  gateways:
+    - eshop-gateway
+  http:
+    - match:
+      - uri:
+          exact: /catalog-api/
+      route:
+      - destination:
+          host: catalogapi
+          port:
+            number: 8080
+    - match:
+      - uri:
+          exact: /ordering-api/
+      route:
+      - destination:
+          host: orderingapi
+          port:
+            number: 8080
+    - match:
+      - uri:
+          exact: /basket-api/
+      route:
+      - destination:
+          host: basketapi
+          port:
+            number: 8080
+    - match:
+      - uri:
+          exact: /
+      route:
+      - destination:
+          host: webshoppingagg
+          port:
+            number: 8080

@@ -1,0 +1,51 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: webspa
+spec:
+  hosts:
+    - webspa
+  http:
+    - match:
+        - uri:
+            exact: /
+      route:
+        - destination:
+            host: webspa
+            port:
+              number: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: eshop-webhooks-web
+spec:
+  hosts:
+    - webhooksclient
+  http:
+    - match:
+        - uri:
+            exact: /webhooks-web
+      route:
+        - destination:
+            host: webhooksclient
+            port:
+              number: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: eshop-webhooks-api
+spec:
+  hosts:
+    - webhooksapi
+  http:
+    - match:
+        - uri:
+            exact: /webhooks-api
+      route:
+        - destination:
+            host: webhooksapi
+            port:
+              number: 80
+---
