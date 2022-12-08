@@ -3,7 +3,8 @@ variables:
   RabbitMqHostname: rabbitmq.$(OpenShiftProject).svc
   SqlHostName: mssql-server-linux.$(OpenShiftProject).svc
   MongoConnectionString: mongodb://mongo.$(OpenShiftProject).svc
-  PublicHostName: eshop$(EnvironmentName)
+#  PublicHostName: eshop$(EnvironmentName)
+  PublicHostName: webmvc$(EnvironmentName)
   IdentityApiHostName: identityapi.$(OpenShiftProject).svc
   IdentityPublicHostName: identity$(EnvironmentName)
   IdentityUrlExternal: http://$(IdentityPublicHostName)
